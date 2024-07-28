@@ -22,7 +22,8 @@ local function createStashes()
                             0.2, 0.2, 199, 208, 209, 100, true, true, 2, nil, nil, false)
 
                         if IsControlJustReleased(0, 38) then
-                            exports['qs-inventory']:openInventory('stash', id)
+                            --exports['qs-inventory']:openInventory('stash', id)
+                            exports['qs-inventory']:RegisterStash('stash', slots, weight) 
                         end
                     end
                 end

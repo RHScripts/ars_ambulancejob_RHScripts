@@ -9,6 +9,10 @@ local SetEntityHealth    = SetEntityHealth
 local TaskPlayAnim       = TaskPlayAnim
 local Wait               = Wait
 
+local saveItems = {
+    'id_card', -- Add here the items that you do NOT want to be deleted
+    'phone',
+}
 
 local function openParamedicMenu(ped, hospital)
     lib.registerContext({
@@ -18,8 +22,7 @@ local function openParamedicMenu(ped, hospital)
             {
                 title = locale("get_treated_paramedic"),
                 onSelect = function()
-                    --local money = exports.ox_inventory:Search("count", "money")
-                    local money = exports['qs-inventory']:Search("count", "money")
+                    local money = exports['qs-inventory']:Search('money')
 
                     if money >= Config.ParamedicTreatmentPrice then
                         utils.addRemoveItem("remove", "money", Config.ParamedicTreatmentPrice)
@@ -93,7 +96,6 @@ local function createAmbulance()
     local sX, sY, sZ = table.unpack(vector)
 
     ambulance = CreateVehicle(vehicleModel, sX, sY, sZ, 0, false, true)
-
 
     SetEntityAsMissionEntity(ambulance, true, true)
     SetVehicleEngineOn(ambulance, true, true, false)
@@ -174,7 +176,6 @@ local function offlineRevive()
         playerCoords = GetEntityCoords(playerPed)
         local dist = #(driverCoords - playerCoords)
 
-
         utils.debug(GetGameTimer() - startTime)
         if (GetGameTimer() - startTime) > 35000 then
             break
@@ -226,6 +227,9 @@ local function offlineRevive()
     stopPlayerDeath()
     DeleteEntity(ambulance)
     DeleteEntity(ambulanceDriver)
+
+    -- Clear inventory after death
+    exports['qs-inventory']:ClearInventory(source, saveItems)
 end
 
 function startCommandTimer()
@@ -245,6 +249,5 @@ function startCommandTimer()
 end
 
 RegisterCommand(Config.NpcReviveCommand, offlineRevive)
-
 
 -- © 𝐴𝑟𝑖𝑢𝑠 𝐷𝑒𝑣𝑒𝑙𝑜𝑝𝑚𝑒𝑛𝑡
